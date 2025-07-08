@@ -3,11 +3,11 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Hotel&nbsp;Alpenblick&nbsp;AI – Digitaler Concierge</title>
+    <title>Hotel Alpenblick AI – Digitaler Concierge</title>
 
     <!-- Dialogflow Messenger -->
     <link rel="stylesheet" href="https://www.gstatic.com/dialogflow-console/fast/df-messenger/prod/v1/themes/df-messenger-default.css" />
-    <script src="https://www.gstatic.com/dialogflow-console/fast/df-messenger/prod/v1/df-messenger.js"></script>
+    <script src="https://www.gstatic.com/dialogflow-console/fast/df-messenger.js"></script>
 
     <style>
       body {
@@ -86,40 +86,58 @@
       }
 
       #lang-container {
-        margin: 30px auto 0;
-        max-width: 300px;
-        text-align: center;
-      }
-
-      #lang-container select {
-        padding: 8px 12px;
-        border-radius: 8px;
-        font-size: 1rem;
+        position: fixed;
+        bottom: 60px;
+        right: 390px;
+        background-color: rgba(0, 0, 0, 0.55);
+        padding: 10px 14px;
+        border-radius: 10px;
+        max-width: 240px;
+        text-align: left;
+        z-index: 998;
       }
 
       #lang-container label {
-        font-size: 1.05rem;
+        font-size: 0.92rem;
         font-weight: 600;
         color: #fff;
         display: block;
-        margin-bottom: 8px;
+        margin-bottom: 6px;
+      }
+
+      #lang-container select {
+        padding: 6px 10px;
+        border-radius: 6px;
+        font-size: 0.95rem;
+        border: none;
+        width: 100%;
+      }
+
+      @media (max-width: 600px) {
+        #lang-container {
+          right: 90px;
+          bottom: 60px;
+          max-width: 200px;
+          font-size: 0.85rem;
+        }
       }
     </style>
   </head>
 
   <body onclick="collapseMessenger(event)">
     <header>HotelAlpenblickAI</header>
+
     <nav>
       <a onclick="toggleSection('start')">Start</a>
       <a onclick="toggleSection('about')">Über uns</a>
       <a onclick="toggleSection('contact')">Kontakt</a>
     </nav>
 
-    <!-- Language selection -->
+    <!-- Language Selector Block -->
     <div id="lang-container">
-      <label for="langSelect">🌍 Sprache wählen / Choose your language:</label>
+      <label for="langSelect"><strong>AI Concierge</strong><br />Frag einfach!</label>
       <select id="langSelect" onchange="launchMessenger(this.value)">
-        <option value="">-- Auswahl / Select --</option>
+        <option value="">-- Sprache wählen --</option>
         <option value="de">Deutsch</option>
         <option value="en">English</option>
         <option value="fr">Français</option>
@@ -159,27 +177,16 @@
 
       function toggleSection(id) {
         const el = document.getElementById(id);
-        if (lastShown && lastShown !== el) {
-          lastShown.style.display = "none";
-        }
-        if (el.style.display === "block") {
-          el.style.display = "none";
-          lastShown = null;
-        } else {
-          el.style.display = "block";
-          lastShown = el;
-        }
+        if (lastShown && lastShown !== el) lastShown.style.display = "none";
+        el.style.display = el.style.display === "block" ? "none" : "block";
+        lastShown = el.style.display === "block" ? el : null;
       }
 
       function collapseMessenger(event) {
         const messenger = document.querySelector("df-messenger");
-        if (!messenger) return;
-        if (!messenger.contains(event.target)) {
-          const iframe = messenger.shadowRoot?.querySelector("iframe");
-          if (iframe) {
-            iframe.contentWindow.postMessage({ event: "dfMessengerReset" }, "*");
-          }
-        }
+        if (!messenger || messenger.contains(event.target)) return;
+        const iframe = messenger.shadowRoot?.querySelector("iframe");
+        if (iframe) iframe.contentWindow.postMessage({ event: "dfMessengerReset" }, "*");
       }
 
       const supportedLangs = ['de', 'en', 'fr', 'it', 'pl'];
@@ -220,5 +227,9 @@
         }, 1200);
       }
     </script>
+
+    <footer style="position: fixed; bottom: 8px; left: 0; right: 0; text-align: center; font-size: 0.8rem; color: rgba(255,255,255,0.6); z-index: 50;">
+      © 2025 Drazen. All rights reserved.
+    </footer>
   </body>
 </html>
