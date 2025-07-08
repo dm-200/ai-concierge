@@ -89,6 +89,7 @@
       color: #fff;
       display: block;
       margin-bottom: 6px;
+      line-height: 1.4;
     }
 
     #lang-container select {
@@ -136,7 +137,7 @@
   <!-- Language Selector -->
   <div id="lang-container">
     <label for="langSelect"><strong>AI Concierge</strong><br />Frag einfach!</label>
-    <select id="langSelect" onchange="launchMessenger(this.value)">
+    <select id="langSelect" onchange="setMessengerLanguage(this.value)">
       <option value="">-- Sprache wählen --</option>
       <option value="de">Deutsch</option>
       <option value="en">English</option>
@@ -146,8 +147,9 @@
     </select>
   </div>
 
-  <!-- Messenger Embed -->
+  <!-- Messenger embed -->
   <df-messenger
+    id="chatbot"
     project-id="cx-agent-465013"
     agent-id="6232d8de-962f-4f8d-8984-d5c7de566d78"
     location="europe-west3"
@@ -157,7 +159,7 @@
     <df-messenger-chat-bubble chat-title="HotelAlpenblickAI"></df-messenger-chat-bubble>
   </df-messenger>
 
-  <!-- Sections -->
+  <!-- Page content -->
   <div id="start" class="section">
     <h2>Willkommen</h2>
     <p>Willkommen im HotelAlpenblickAI – Ihrem digitalen Gastgeber in den sanften Weinbergen der Wachau. Nutzen Sie unseren Concierge-Chat rund um die Uhr für alle Fragen zu Ihrem Aufenthalt.</p>
@@ -180,6 +182,7 @@
     </p>
   </div>
 
+  <!-- Script -->
   <script>
     let lastShown = null;
 
@@ -203,16 +206,19 @@
 
     window.addEventListener('DOMContentLoaded', () => {
       const dropdown = document.getElementById('langSelect');
+      const messenger = document.querySelector('df-messenger');
       dropdown.value = preferredLang;
-      launchMessenger(preferredLang);
+      messenger.setAttribute('language-code', preferredLang);
     });
 
-    function launchMessenger(langCode) {
+    function setMessengerLanguage(lang) {
       const messenger = document.querySelector('df-messenger');
-      if (!messenger || !langCode) return;
-      messenger.setAttribute('language-code', langCode);
+      if (!lang || !messenger) return;
+      messenger.setAttribute('language-code', lang);
       const iframe = messenger.shadowRoot?.querySelector("iframe");
-      if (iframe) iframe.contentWindow.postMessage({ event: "dfMessengerReset" }, "*");
+      if (iframe) {
+        iframe.contentWindow.postMessage({ event: "dfMessengerReset" }, "*");
+      }
     }
   </script>
 
