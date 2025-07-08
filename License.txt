@@ -1,0 +1,13 @@
+Copyright © 2025 Drazen. All rights reserved.
+
+This project and its contents — including but not limited to the HTML, CSS, JavaScript, design, layout, text, and any associated files — constitute the original work and intellectual property of the author.
+
+No part of this project may be reproduced, copied, modified, distributed, published, hosted, embedded, or used in any way, in whole or in part, without the express prior written permission of the author.
+
+Unauthorized use, redistribution, reverse engineering, or appropriation of this material for personal, academic, or commercial purposes is strictly prohibited and may result in legal action.
+
+This repository is provided for demonstration and informational purposes only. Viewing the source code does not grant any right of use or reproduction.
+
+DO NOT copy. DO NOT reuse. DO NOT adapt.
+
+All rights reserved.
