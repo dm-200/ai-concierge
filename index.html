@@ -200,11 +200,13 @@
     const userLang = navigator.language.slice(0, 2);
     const preferredLang = supportedLangs.includes(userLang) ? userLang : 'en';
 
-    window.addEventListener('DOMContentLoaded', () => {
-      const dropdown = document.getElementById('langSelect');
-      dropdown.value = preferredLang;
-      launchMessenger(preferredLang);
-    });
+window.addEventListener('DOMContentLoaded', () => {
+  const dropdown = document.getElementById('langSelect');
+  dropdown.value = preferredLang;
+  setTimeout(() => {
+    launchMessenger(preferredLang);
+  }, 300); // Slight pause, keeps everything stable
+});
 
     function launchMessenger(langCode) {
       if (!langCode) return;
