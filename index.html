@@ -71,6 +71,35 @@
         }
       }
 
+      #chat-info {
+        position: fixed;
+        bottom: 16px;
+        right: 390px;
+        background-color: rgba(0, 0, 0, 0.55);
+        padding: 10px 14px;
+        border-radius: 12px;
+        font-size: 0.92rem;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        z-index: 998;
+        max-width: 220px;
+      }
+
+      #chat-info strong {
+        font-weight: bold;
+        color: #fff;
+      }
+
+      #langSelect {
+        margin-top: 6px;
+        padding: 6px 10px;
+        font-size: 0.9rem;
+        border-radius: 6px;
+        border: none;
+        width: 100%;
+      }
+
       df-messenger {
         z-index: 999;
         position: fixed;
@@ -85,27 +114,13 @@
         --df-messenger-chat-height: 500px;
       }
 
-      #lang-container {
-        position: fixed;
-        bottom: 24px;
-        right: 400px;
-        z-index: 1000;
-        color: #fff;
-        font-size: 1rem;
-        text-align: left;
-        line-height: 1.4;
-      }
-
-      #lang-container label {
-        font-weight: bold;
-        display: block;
-        margin-bottom: 6px;
-      }
-
-      #lang-container select {
-        padding: 6px 10px;
-        border-radius: 8px;
-        font-size: 1rem;
+      @media (max-width: 600px) {
+        #chat-info {
+          right: 80px;
+          max-width: 180px;
+          font-size: 0.85rem;
+          bottom: 100px;
+        }
       }
     </style>
   </head>
@@ -118,9 +133,10 @@
       <a onclick="toggleSection('contact')">Kontakt</a>
     </nav>
 
-    <!-- Language selection docked left of CX Messenger -->
-    <div id="lang-container">
-      <label for="langSelect">AI Hotel Concierge<br />Einfach fragen!</label>
+    <!-- Chat Info Dock -->
+    <div id="chat-info">
+      <strong>AI Hotel Concierge</strong>
+      Einfach fragen!
       <select id="langSelect" onchange="launchMessenger(this.value)">
         <option value="">-- Sprache wählen --</option>
         <option value="de">Deutsch</option>
@@ -162,6 +178,7 @@
       </p>
     </div>
 
+    <!-- Dialogflow Logic -->
     <script>
       let lastShown = null;
 
