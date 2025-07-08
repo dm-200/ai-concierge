@@ -3,11 +3,11 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Hotel&nbsp;Alpenblick&nbsp;AI – Digitaler Concierge</title>
+    <title>Hotel Alpenblick AI – Digitaler Concierge</title>
 
     <!-- Dialogflow Messenger -->
     <link rel="stylesheet" href="https://www.gstatic.com/dialogflow-console/fast/df-messenger/prod/v1/themes/df-messenger-default.css" />
-    <script src="https://www.gstatic.com/dialogflow-console/fast/df-messenger/prod/v1/df-messenger.js"></script>
+    <script src="https://www.gstatic.com/dialogflow-console/fast/df-messenger.js"></script>
 
     <style>
       body {
@@ -71,6 +71,7 @@
         }
       }
 
+      /* Language + Label block */
       #chat-info {
         position: fixed;
         bottom: 16px;
@@ -116,10 +117,10 @@
 
       @media (max-width: 600px) {
         #chat-info {
-          right: 80px;
+          right: 90px;
+          bottom: 16px;
           max-width: 180px;
           font-size: 0.85rem;
-          bottom: 100px;
         }
       }
     </style>
@@ -127,13 +128,14 @@
 
   <body onclick="collapseMessenger(event)">
     <header>HotelAlpenblickAI</header>
+
     <nav>
       <a onclick="toggleSection('start')">Start</a>
       <a onclick="toggleSection('about')">Über uns</a>
       <a onclick="toggleSection('contact')">Kontakt</a>
     </nav>
 
-    <!-- Chat Info Dock -->
+    <!-- Chat Info Block -->
     <div id="chat-info">
       <strong>AI Hotel Concierge</strong>
       Einfach fragen!
@@ -152,6 +154,7 @@
       </select>
     </div>
 
+    <!-- Page Sections -->
     <div id="start" class="section">
       <h2>Willkommen</h2>
       <p>
@@ -178,33 +181,22 @@
       </p>
     </div>
 
-    <!-- Dialogflow Logic -->
+    <!-- Dynamic Messenger Injection -->
     <script>
       let lastShown = null;
 
       function toggleSection(id) {
         const el = document.getElementById(id);
-        if (lastShown && lastShown !== el) {
-          lastShown.style.display = "none";
-        }
-        if (el.style.display === "block") {
-          el.style.display = "none";
-          lastShown = null;
-        } else {
-          el.style.display = "block";
-          lastShown = el;
-        }
+        if (lastShown && lastShown !== el) lastShown.style.display = "none";
+        el.style.display = el.style.display === "block" ? "none" : "block";
+        lastShown = el.style.display === "block" ? el : null;
       }
 
       function collapseMessenger(event) {
         const messenger = document.querySelector("df-messenger");
-        if (!messenger) return;
-        if (!messenger.contains(event.target)) {
-          const iframe = messenger.shadowRoot?.querySelector("iframe");
-          if (iframe) {
-            iframe.contentWindow.postMessage({ event: "dfMessengerReset" }, "*");
-          }
-        }
+        if (!messenger || messenger.contains(event.target)) return;
+        const iframe = messenger.shadowRoot?.querySelector("iframe");
+        if (iframe) iframe.contentWindow.postMessage({ event: "dfMessengerReset" }, "*");
       }
 
       const supportedLangs = ['de', 'en', 'fr', 'it', 'pl', 'es', 'pt', 'nl', 'cs', 'hr'];
@@ -219,7 +211,6 @@
 
       function launchMessenger(langCode) {
         if (!langCode) return;
-
         const existing = document.querySelector('df-messenger');
         if (existing) existing.remove();
 
@@ -239,15 +230,14 @@
 
         setTimeout(() => {
           const iframe = messenger.shadowRoot?.querySelector("iframe");
-          if (iframe) {
-            iframe.contentWindow.postMessage({ event: "dfMessengerOpen" }, "*");
-          }
-        }, 1200);
-      }
+          if (iframe) iframe.contentWindow.postMessage({ event: "dfMessengerOpen" }, "*");
+      }, 1200);
+    }
     </script>
-	<footer style="position: fixed; bottom: 8px; left: 0; right: 0; text-align: center; font-size: 0.8rem; color: rgba(255,255,255,0.6); z-index: 50;">
-  © 2025 Drazen. All rights reserved.
-</footer>
 
+    <!-- Copyright Footer -->
+    <footer style="position: fixed; bottom: 8px; left: 0; right: 0; text-align: center; font-size: 0.8rem; color: rgba(255,255,255,0.6); z-index: 50;">
+      © 2025 Drazen. All rights reserved.
+    </footer>
   </body>
 </html>
