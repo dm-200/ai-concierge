@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Hotel Alpenblick AI – Digitaler Concierge</title>
 
-  <!-- Dialogflow Messenger -->
   <link rel="stylesheet" href="https://www.gstatic.com/dialogflow-console/fast/df-messenger/prod/v1/themes/df-messenger-default.css" />
   <script src="https://www.gstatic.com/dialogflow-console/fast/df-messenger.js"></script>
 
@@ -71,6 +70,20 @@
       }
     }
 
+    df-messenger {
+      z-index: 999;
+      position: fixed;
+      bottom: 16px;
+      right: 16px;
+      --df-messenger-font-color: #000;
+      --df-messenger-font-family: 'Segoe UI', sans-serif;
+      --df-messenger-chat-background: #f3f6fc;
+      --df-messenger-message-user-background: #d3e3fd;
+      --df-messenger-message-bot-background: #fff;
+      --df-messenger-chat-width: 360px;
+      --df-messenger-chat-height: 500px;
+    }
+
     #lang-container {
       position: fixed;
       bottom: 68px;
@@ -100,20 +113,6 @@
       width: 100%;
     }
 
-    df-messenger {
-      z-index: 999;
-      position: fixed;
-      bottom: 16px;
-      right: 16px;
-      --df-messenger-font-color: #000;
-      --df-messenger-font-family: 'Segoe UI', sans-serif;
-      --df-messenger-chat-background: #f3f6fc;
-      --df-messenger-message-user-background: #d3e3fd;
-      --df-messenger-message-bot-background: #fff;
-      --df-messenger-chat-width: 360px;
-      --df-messenger-chat-height: 500px;
-    }
-
     @media (max-width: 600px) {
       #lang-container {
         right: 90px;
@@ -134,10 +133,9 @@
     <a onclick="toggleSection('contact')">Kontakt</a>
   </nav>
 
-  <!-- Language Selector -->
   <div id="lang-container">
     <label for="langSelect"><strong>AI Concierge</strong><br />Frag einfach!</label>
-    <select id="langSelect" onchange="setMessengerLanguage(this.value)">
+    <select id="langSelect" onchange="launchMessenger(this.value)">
       <option value="">-- Sprache wählen --</option>
       <option value="de">Deutsch</option>
       <option value="en">English</option>
@@ -147,27 +145,18 @@
     </select>
   </div>
 
-  <!-- Messenger embed -->
-  <df-messenger
-    id="chatbot"
-    project-id="cx-agent-465013"
-    agent-id="6232d8de-962f-4f8d-8984-d5c7de566d78"
-    location="europe-west3"
-    language-code="de"
-    allow-feedback="all"
-    max-query-length="-1">
-    <df-messenger-chat-bubble chat-title="HotelAlpenblickAI"></df-messenger-chat-bubble>
-  </df-messenger>
-
-  <!-- Page content -->
   <div id="start" class="section">
     <h2>Willkommen</h2>
-    <p>Willkommen im HotelAlpenblickAI – Ihrem digitalen Gastgeber in den sanften Weinbergen der Wachau. Nutzen Sie unseren Concierge-Chat rund um die Uhr für alle Fragen zu Ihrem Aufenthalt.</p>
+    <p>
+      Willkommen im HotelAlpenblickAI – Ihrem digitalen Gastgeber in den sanften Weinbergen der Wachau. Nutzen Sie unseren Concierge-Chat rund um die Uhr für alle Fragen zu Ihrem Aufenthalt.
+    </p>
   </div>
 
   <div id="about" class="section">
     <h2>Über uns</h2>
-    <p>Unser fiktives Hotel liegt am Fuße der Donauhänge, eingebettet in Natur und Stille. Mit moderner Technik und traditionellem Charme begleiten wir Sie durch einen entspannten Aufenthalt – digital, persönlich und stilvoll.</p>
+    <p>
+      Unser fiktives Hotel liegt am Fuße der Donauhänge, eingebettet in Natur und Stille. Mit moderner Technik und traditionellem Charme begleiten wir Sie durch einen entspannten Aufenthalt – digital, persönlich und stilvoll.
+    </p>
   </div>
 
   <div id="contact" class="section">
@@ -182,7 +171,6 @@
     </p>
   </div>
 
-  <!-- Script -->
   <script>
     let lastShown = null;
 
@@ -204,22 +192,30 @@
     const userLang = navigator.language.slice(0, 2);
     const preferredLang = supportedLangs.includes(userLang) ? userLang : 'en';
 
+    function launchMessenger(langCode) {
+      const existing = document.querySelector('df-messenger');
+      if (existing) existing.remove();
+
+      const messenger = document.createElement('df-messenger');
+      messenger.setAttribute('project-id', 'cx-agent-465013');
+      messenger.setAttribute('agent-id', '6232d8de-962f-4f8d-8984-d5c7de566d78');
+      messenger.setAttribute('location', 'europe-west3');
+      messenger.setAttribute('language-code', langCode);
+      messenger.setAttribute('allow-feedback', 'all');
+      messenger.setAttribute('max-query-length', '-1');
+
+      const bubble = document.createElement('df-messenger-chat-bubble');
+      bubble.setAttribute('chat-title', 'HotelAlpenblickAI');
+      messenger.appendChild(bubble);
+
+      document.body.appendChild(messenger);
+    }
+
     window.addEventListener('DOMContentLoaded', () => {
       const dropdown = document.getElementById('langSelect');
-      const messenger = document.querySelector('df-messenger');
       dropdown.value = preferredLang;
-      messenger.setAttribute('language-code', preferredLang);
+      launchMessenger(preferredLang);
     });
-
-    function setMessengerLanguage(lang) {
-      const messenger = document.querySelector('df-messenger');
-      if (!lang || !messenger) return;
-      messenger.setAttribute('language-code', lang);
-      const iframe = messenger.shadowRoot?.querySelector("iframe");
-      if (iframe) {
-        iframe.contentWindow.postMessage({ event: "dfMessengerReset" }, "*");
-      }
-    }
   </script>
 
   <footer style="position: fixed; bottom: 8px; left: 0; right: 0; text-align: center; font-size: 0.8rem; color: rgba(255,255,255,0.6); z-index: 50;">
