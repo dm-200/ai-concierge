@@ -73,7 +73,7 @@
 
     #chat-info {
       position: fixed;
-      bottom: 16px;
+      bottom: 48px;
       right: 90px;
       background-color: rgba(0, 0, 0, 0.55);
       padding: 12px 14px;
@@ -104,7 +104,7 @@
     df-messenger {
       z-index: 999;
       position: fixed;
-      bottom: 16px;
+      bottom: 48px;
       right: 16px;
       --df-messenger-font-color: #000;
       --df-messenger-font-family: 'Segoe UI', sans-serif;
@@ -118,8 +118,13 @@
     @media (max-width: 520px) {
       #chat-info {
         right: 80px;
+        bottom: 48px;
         max-width: 180px;
         font-size: 0.85rem;
+      }
+
+      df-messenger {
+        bottom: 48px;
       }
     }
   </style>
