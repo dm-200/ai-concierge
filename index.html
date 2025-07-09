@@ -209,12 +209,19 @@
       messenger.appendChild(bubble);
 
       document.body.appendChild(messenger);
+
+      setTimeout(() => {
+        const iframe = messenger.shadowRoot?.querySelector("iframe");
+        if (iframe) iframe.contentWindow.postMessage({ event: "dfMessengerOpen" }, "*");
+      }, 1200);
     }
 
     window.addEventListener('DOMContentLoaded', () => {
       const dropdown = document.getElementById('langSelect');
       dropdown.value = preferredLang;
-      launchMessenger(preferredLang);
+      setTimeout(() => {
+        launchMessenger(preferredLang);
+      }, 1200);
     });
   </script>
 
