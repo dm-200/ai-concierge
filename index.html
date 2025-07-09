@@ -73,7 +73,7 @@
 
     #chat-info {
       position: fixed;
-      bottom: 40px;
+      bottom: 48px;
       right: 90px;
       background-color: rgba(0, 0, 0, 0.55);
       padding: 12px 14px;
@@ -104,7 +104,7 @@
     df-messenger {
       z-index: 999;
       position: fixed;
-      bottom: 56px;
+      bottom: 48px;
       right: 16px;
       --df-messenger-font-color: #000;
       --df-messenger-font-family: 'Segoe UI', sans-serif;
@@ -118,20 +118,20 @@
     @media (max-width: 520px) {
       #chat-info {
         right: 80px;
-        bottom: 40px;
+        bottom: 48px;
         max-width: 180px;
         font-size: 0.85rem;
       }
 
       df-messenger {
-        bottom: 56px;
+        bottom: 48px;
       }
     }
   </style>
 </head>
 
 <body onclick="collapseMessenger(event)">
-  <header>AI Concierge</header>
+  <header>HotelAlpenblickAI</header>
 
   <nav>
     <a onclick="toggleSection('start')">Start</a>
@@ -211,8 +211,11 @@
       messenger.setAttribute('allow-feedback', 'all');
       messenger.setAttribute('max-query-length', '-1');
 
+      const localToday = new Date().toLocaleDateString('en-CA'); // e.g. "2025-07-09"
+      messenger.setAttribute('session-params', JSON.stringify({ today: localToday }));
+
       const bubble = document.createElement('df-messenger-chat-bubble');
-      bubble.setAttribute('chat-title', 'Hotel Alpenblick AI');
+      bubble.setAttribute('chat-title', 'HotelAlpenblickAI');
       messenger.appendChild(bubble);
 
       document.body.appendChild(messenger);
