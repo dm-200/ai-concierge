@@ -5,8 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Hotel Alpenblick AI – Digitaler Concierge</title>
 
-    <link rel="stylesheet" href="https://www.gstatic.com/dialogflow-console/fast/df-messenger/prod/v1/themes/df-messenger-default.css" />
-    <script src="https://www.gstatic.com/dialogflow-console/fast/df-messenger/prod/v1/df-messenger.js"></script>
+  <!-- Dialogflow Messenger -->
+  <link rel="stylesheet" href="https://www.gstatic.com/dialogflow-console/fast/df-messenger/prod/v1/themes/df-messenger-default.css" />
+  <script src="https://www.gstatic.com/dialogflow-console/fast/df-messenger/prod/v1/df-messenger.js"></script>
 
   <style>
     body {
@@ -86,8 +87,8 @@
 
     #lang-container {
       position: fixed;
-      bottom: 68px;
-      right: 390px;
+      right: 400px;
+      bottom: 80px;
       background-color: rgba(0, 0, 0, 0.55);
       padding: 10px 14px;
       border-radius: 10px;
@@ -116,7 +117,7 @@
     @media (max-width: 600px) {
       #lang-container {
         right: 90px;
-        bottom: 68px;
+        bottom: 80px;
         max-width: 200px;
         font-size: 0.85rem;
       }
@@ -133,6 +134,7 @@
     <a onclick="toggleSection('contact')">Kontakt</a>
   </nav>
 
+  <!-- Language Selector -->
   <div id="lang-container">
     <label for="langSelect"><strong>AI Concierge</strong><br />Frag einfach!</label>
     <select id="langSelect" onchange="launchMessenger(this.value)">
@@ -145,6 +147,7 @@
     </select>
   </div>
 
+  <!-- Page Sections -->
   <div id="start" class="section">
     <h2>Willkommen</h2>
     <p>
@@ -171,6 +174,7 @@
     </p>
   </div>
 
+  <!-- Scripts -->
   <script>
     let lastShown = null;
 
@@ -209,19 +213,12 @@
       messenger.appendChild(bubble);
 
       document.body.appendChild(messenger);
-
-      setTimeout(() => {
-        const iframe = messenger.shadowRoot?.querySelector("iframe");
-        if (iframe) iframe.contentWindow.postMessage({ event: "dfMessengerOpen" }, "*");
-      }, 1200);
     }
 
     window.addEventListener('DOMContentLoaded', () => {
       const dropdown = document.getElementById('langSelect');
       dropdown.value = preferredLang;
-      setTimeout(() => {
-        launchMessenger(preferredLang);
-      }, 1200);
+      launchMessenger(preferredLang);
     });
   </script>
 
