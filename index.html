@@ -234,7 +234,7 @@
       messenger.setAttribute('allow-feedback', 'all');
       messenger.setAttribute('max-query-length', '-1');
 	  
-	  messenger.dialogflowMessengerOptions = window.DialogflowMessengerOptions;
+	  messenger.setAttribute('dialogflow-messenger-options', 'DialogflowMessengerOptions');
 
       const localToday = new Date().toLocaleDateString('en-CA'); // e.g. "2025-07-09"
       messenger.setAttribute('session-params', JSON.stringify({ today: localToday }));
