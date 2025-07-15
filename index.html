@@ -199,6 +199,29 @@
     const userLang = navigator.language.slice(0, 2);
     const preferredLang = supportedLangs.includes(userLang) ? userLang : 'en';
 
+	window.DialogflowMessengerOptions = {
+  onFeedback: (rating, responseId, answerFeedback) => {
+    const payload = {
+      responseId: responseId,
+      answerFeedback: {
+        rating: rating,
+        ...(rating === 2 ? {
+          ratingReason: {
+            reasonLabels: answerFeedback?.reasonLabels || [],
+            feedback: answerFeedback?.feedback || ""
+          }
+        } : {})
+      }
+    };
+
+    fetch("https://feedback-cx-230944201883.europe-west3.run.app/feedback", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    }).catch(() => {}); // Quiet fail — no logging
+  }
+};
+
     function launchMessenger(langCode) {
       const existing = document.querySelector('df-messenger');
       if (existing) existing.remove();
@@ -226,28 +249,6 @@
       dropdown.value = preferredLang;
       launchMessenger(preferredLang);
     });
-	window.DialogflowMessengerOptions = {
-  onFeedback: (rating, responseId, answerFeedback) => {
-    const payload = {
-      responseId: responseId,
-      answerFeedback: {
-        rating: rating,
-        ...(rating === 2 ? {
-          ratingReason: {
-            reasonLabels: answerFeedback?.reasonLabels || [],
-            feedback: answerFeedback?.feedback || ""
-          }
-        } : {})
-      }
-    };
-
-    fetch("https://feedback-cx-230944201883.europe-west3.run.app/feedback", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload)
-    }).catch(() => {}); // Quiet fail — no logging
-  }
-};
 
   </script>
 
