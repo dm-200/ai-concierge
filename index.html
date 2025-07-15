@@ -254,6 +254,7 @@ function launchMessenger(langCode) {
   });
 
       const bubble = document.createElement('df-messenger-chat-bubble');
+      bubble.setAttribute('chat-title', 'HotelAlpenblickAI');
       messenger.appendChild(bubble);
 
       document.body.appendChild(messenger);
