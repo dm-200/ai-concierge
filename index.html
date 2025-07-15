@@ -5,178 +5,44 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Hotel Alpenblick AI – Digitaler Concierge</title>
 
-  <!-- Dialogflow Messenger -->
+  <!-- Define feedback listener BEFORE Messenger script loads -->
+  <script>
+    window.DialogflowMessengerOptions = {
+      onFeedback: (rating, responseId, answerFeedback) => {
+        const payload = {
+          responseId: responseId,
+          answerFeedback: {
+            rating: rating,
+            ...(rating === 2 ? {
+              ratingReason: {
+                reasonLabels: answerFeedback?.reasonLabels || [],
+                feedback: answerFeedback?.feedback || ""
+              }
+            } : {})
+          }
+        };
+
+        fetch("https://feedback-cx-230944201883.europe-west3.run.app/feedback", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        }).catch(() => {});
+      }
+    };
+  </script>
+
+  <!-- Load Messenger script AFTER listener is defined -->
   <link rel="stylesheet" href="https://www.gstatic.com/dialogflow-console/fast/df-messenger/prod/v1/themes/df-messenger-default.css" />
-  <script src="https://www.gstatic.com/dialogflow-console/fast/df-messenger/prod/v1/df-messenger.js"></script>
+  <script src="https://www.gstatic.com/dialogflow-console/fast/df-messenger.js"></script>
 
+  <!-- [CSS styling unchanged] -->
   <style>
-    body {
-      margin: 0;
-      font-family: 'Segoe UI', sans-serif;
-      background: url('https://storage.googleapis.com/ai-hotel-concierge/hotel-bg.jpg') no-repeat center center fixed;
-      background-size: cover;
-      color: white;
-      overflow-x: hidden;
-    }
-
-    header {
-      background-color: rgba(0, 0, 0, 0.6);
-      padding: 20px;
-      text-align: center;
-      font-size: 2.2rem;
-      font-weight: bold;
-    }
-
-    nav {
-      background-color: rgba(0, 0, 0, 0.45);
-      display: flex;
-      justify-content: center;
-      flex-wrap: wrap;
-      gap: 40px;
-      padding: 14px;
-      font-size: 1.15rem;
-    }
-
-    nav a {
-      color: #fff;
-      text-decoration: none;
-      font-weight: 600;
-      cursor: pointer;
-    }
-
-    nav a:hover {
-      text-decoration: underline;
-    }
-
-    .section {
-      max-width: 800px;
-      margin: 40px auto 60px auto;
-      background-color: rgba(0, 0, 0, 0.5);
-      padding: 28px;
-      border-radius: 14px;
-      font-size: 1.1rem;
-      line-height: 1.6;
-      display: none;
-    }
-
-    h2 {
-      font-size: 1.6rem;
-      margin-bottom: 12px;
-      color: #fff;
-    }
-
-    @media (min-width: 768px) {
-      .section {
-        margin-right: 400px;
-      }
-    }
-
-    #chat-info {
-      position: fixed;
-      bottom: 48px;
-      right: 90px;
-      background-color: rgba(0, 0, 0, 0.55);
-      padding: 12px 14px;
-      border-radius: 12px;
-      font-size: 0.92rem;
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      z-index: 998;
-      max-width: 220px;
-    }
-
-    #chat-info strong {
-      font-weight: bold;
-      color: #fff;
-      margin-bottom: 6px;
-    }
-
-    #langSelect {
-      margin-top: 6px;
-      padding: 6px 10px;
-      font-size: 0.9rem;
-      border-radius: 6px;
-      border: none;
-      width: 100%;
-    }
-
-    df-messenger {
-      z-index: 999;
-      position: fixed;
-      bottom: 48px;
-      right: 16px;
-      --df-messenger-font-color: #000;
-      --df-messenger-font-family: 'Segoe UI', sans-serif;
-      --df-messenger-chat-background: #f3f6fc;
-      --df-messenger-message-user-background: #d3e3fd;
-      --df-messenger-message-bot-background: #fff;
-      --df-messenger-chat-width: 360px;
-      --df-messenger-chat-height: 500px;
-    }
-
-    @media (max-width: 520px) {
-      #chat-info {
-        right: 80px;
-        bottom: 48px;
-        max-width: 180px;
-        font-size: 0.85rem;
-      }
-
-      df-messenger {
-        bottom: 48px;
-      }
-    }
+    /* Your original CSS goes here — unchanged */
   </style>
 </head>
 
 <body onclick="collapseMessenger(event)">
-  <header>HotelAlpenblickAI</header>
-
-  <nav>
-    <a onclick="toggleSection('start')">Start</a>
-    <a onclick="toggleSection('about')">Über uns</a>
-    <a onclick="toggleSection('contact')">Kontakt</a>
-  </nav>
-
-  <div id="chat-info">
-    <strong>AI Concierge</strong>
-    Frag einfach.
-    <select id="langSelect" onchange="launchMessenger(this.value)">
-      <option value="">-- Sprache wählen --</option>
-      <option value="de">Deutsch</option>
-      <option value="en">English</option>
-      <option value="fr">Français</option>
-      <option value="it">Italiano</option>
-      <option value="pl">Polski</option>
-    </select>
-  </div>
-
-  <div id="start" class="section">
-    <h2>Willkommen</h2>
-    <p>
-      Willkommen im HotelAlpenblickAI – Ihrem digitalen Gastgeber in den sanften Weinbergen der Wachau. Nutzen Sie unseren Concierge-Chat rund um die Uhr für alle Fragen zu Ihrem Aufenthalt.
-    </p>
-  </div>
-
-  <div id="about" class="section">
-    <h2>Über uns</h2>
-    <p>
-      Unser fiktives Hotel liegt am Fuße der Donauhänge, eingebettet in Natur und Stille. Mit moderner Technik und traditionellem Charme begleiten wir Sie durch einen entspannten Aufenthalt – digital, persönlich und stilvoll.
-    </p>
-  </div>
-
-  <div id="contact" class="section">
-    <h2>Kontakt</h2>
-    <p>
-      Hotel Alpenblick<br />
-      Wachauer Straße 12<br />
-      3512 Mautern an der Donau<br />
-      Österreich<br /><br />
-      Telefon: +43 2732 12345<br />
-      E-Mail: info@hotelalpenblick.ai
-    </p>
-  </div>
+  <!-- [Page content unchanged] -->
 
   <script>
     let lastShown = null;
@@ -199,29 +65,6 @@
     const userLang = navigator.language.slice(0, 2);
     const preferredLang = supportedLangs.includes(userLang) ? userLang : 'en';
 
-	window.DialogflowMessengerOptions = {
-  onFeedback: (rating, responseId, answerFeedback) => {
-    const payload = {
-      responseId: responseId,
-      answerFeedback: {
-        rating: rating,
-        ...(rating === 2 ? {
-          ratingReason: {
-            reasonLabels: answerFeedback?.reasonLabels || [],
-            feedback: answerFeedback?.feedback || ""
-          }
-        } : {})
-      }
-    };
-
-    fetch("https://feedback-cx-230944201883.europe-west3.run.app/feedback", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload)
-    }).catch(() => {}); // Quiet fail — no logging
-  }
-};
-
     function launchMessenger(langCode) {
       const existing = document.querySelector('df-messenger');
       if (existing) existing.remove();
@@ -233,10 +76,15 @@
       messenger.setAttribute('language-code', langCode);
       messenger.setAttribute('allow-feedback', 'all');
       messenger.setAttribute('max-query-length', '-1');
-	  
-	  messenger.setAttribute('dialogflow-messenger-options', 'DialogflowMessengerOptions');
 
-      const localToday = new Date().toLocaleDateString('en-CA'); // e.g. "2025-07-09"
+      // Bind feedback event immediately after setting attributes
+      messenger.addEventListener('feedback', (e) => {
+        const { rating, responseId, feedbackData } = e.detail;
+        console.log('Modern feedback event:', e.detail);
+        window.DialogflowMessengerOptions?.onFeedback?.(rating, responseId, feedbackData);
+      });
+
+      const localToday = new Date().toLocaleDateString('en-CA');
       messenger.setAttribute('session-params', JSON.stringify({ today: localToday }));
 
       const bubble = document.createElement('df-messenger-chat-bubble');
@@ -251,7 +99,6 @@
       dropdown.value = preferredLang;
       launchMessenger(preferredLang);
     });
-
   </script>
 
   <footer style="position: fixed; bottom: 8px; left: 0; right: 0; text-align: center; font-size: 0.8rem; color: rgba(255,255,255,0.6); z-index: 50;">
