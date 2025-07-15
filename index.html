@@ -33,7 +33,7 @@
 
   <!-- Load Messenger script AFTER listener is defined -->
   <link rel="stylesheet" href="https://www.gstatic.com/dialogflow-console/fast/df-messenger/prod/v1/themes/df-messenger-default.css" />
-  <script src="https://www.gstatic.com/dialogflow-console/fast/df-messenger/prod/v1/df-messenger.js"></script>
+  <script src="https://www.gstatic.com/dialogflow-console/webmessenger/1.0/webmessenger.js"></script>
 
   <style>
     body {
@@ -225,30 +225,35 @@
     const userLang = navigator.language.slice(0, 2);
     const preferredLang = supportedLangs.includes(userLang) ? userLang : 'en';
 
-    function launchMessenger(langCode) {
-      const existing = document.querySelector('df-messenger');
-      if (existing) existing.remove();
+function launchMessenger(langCode) {
+  const existing = document.querySelector('df-messenger');
+  if (existing) existing.remove();
 
-      const messenger = document.createElement('df-messenger');
-      messenger.setAttribute('project-id', 'cx-agent-465013');
-      messenger.setAttribute('agent-id', '6232d8de-962f-4f8d-8984-d5c7de566d78');
-      messenger.setAttribute('location', 'europe-west3');
-      messenger.setAttribute('language-code', langCode);
-      messenger.setAttribute('allow-feedback', 'all');
-      messenger.setAttribute('max-query-length', '-1');
+  const messenger = document.createElement('df-messenger');
+  
+  // Essential attributes (keep bubble creation)
+  messenger.setAttribute('chat-title', 'HotelAlpenblickAI');
+  messenger.setAttribute('project-id', 'cx-agent-465013');
+  messenger.setAttribute('agent-id', '6232d8de-962f-4f8d-8984-d5c7de566d78');
+  messenger.setAttribute('language-code', langCode);
+  messenger.setAttribute('allow-feedback', 'true');
 
-      // Modern feedback listener
-      messenger.addEventListener('feedback', (e) => {
-        const { rating, responseId, feedbackData } = e.detail;
-        console.log('Modern feedback event:', e.detail);
-        window.DialogflowMessengerOptions?.onFeedback?.(rating, responseId, feedbackData);
-      });
-
-      const localToday = new Date().toLocaleDateString('en-CA');
-      messenger.setAttribute('session-params', JSON.stringify({ today: localToday }));
+  // Modern event listener (dual submission)
+  messenger.addEventListener('feedback', (e) => {
+    console.log('Feedback captured:', e.detail);
+    
+    // Your custom submission
+    if (window.DialogflowMessengerOptions?.onFeedback) {
+      window.DialogflowMessengerOptions.onFeedback(
+        e.detail.rating,
+        e.detail.responseId,
+        e.detail.feedbackData
+      );
+    }
+    // Google's submission still happens automatically
+  });
 
       const bubble = document.createElement('df-messenger-chat-bubble');
-      bubble.setAttribute('chat-title', 'HotelAlpenblickAI');
       messenger.appendChild(bubble);
 
       document.body.appendChild(messenger);
