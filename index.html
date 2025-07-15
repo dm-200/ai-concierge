@@ -226,6 +226,29 @@
       dropdown.value = preferredLang;
       launchMessenger(preferredLang);
     });
+	window.DialogflowMessengerOptions = {
+  onFeedback: (rating, responseId, answerFeedback) => {
+    const payload = {
+      responseId: responseId,
+      answerFeedback: {
+        rating: rating,
+        ...(rating === 2 ? {
+          ratingReason: {
+            reasonLabels: answerFeedback?.reasonLabels || [],
+            feedback: answerFeedback?.feedback || ""
+          }
+        } : {})
+      }
+    };
+
+    fetch("https://feedback-cx-230944201883.europe-west3.run.app/feedback", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    }).catch(() => {}); // Quiet fail — no logging
+  }
+};
+
   </script>
 
   <footer style="position: fixed; bottom: 8px; left: 0; right: 0; text-align: center; font-size: 0.8rem; color: rgba(255,255,255,0.6); z-index: 50;">
